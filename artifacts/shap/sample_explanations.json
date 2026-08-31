@@ -1,0 +1,182 @@
+[
+  {
+    "sample_index": 0,
+    "top_model_contributors": [
+      {
+        "feature": "num__previous_chargebacks",
+        "phrase": "Previous chargebacks on the customer",
+        "contribution": -0.013284160592278391,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__customer_account_age_days",
+        "phrase": "Customer account age",
+        "contribution": -0.013042328732125756,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__failed_attempts_24h",
+        "phrase": "Failed payment attempts in 24 hours",
+        "contribution": -0.01025483998604708,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__amount_deviation",
+        "phrase": "Deviation from the customer's usual amount",
+        "contribution": -0.010185620036927589,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__ip_risk_score",
+        "phrase": "IP risk score",
+        "contribution": -0.009463826886980935,
+        "direction": "decreases_risk"
+      }
+    ],
+    "disclaimer": "Top model contributors reflect model feature attributions, not causal claims."
+  },
+  {
+    "sample_index": 1,
+    "top_model_contributors": [
+      {
+        "feature": "num__previous_chargebacks",
+        "phrase": "Previous chargebacks on the customer",
+        "contribution": -0.01293185942551845,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__customer_account_age_days",
+        "phrase": "Customer account age",
+        "contribution": -0.010927549459261478,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__failed_attempts_24h",
+        "phrase": "Failed payment attempts in 24 hours",
+        "contribution": -0.00759985305026824,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__amount",
+        "phrase": "Transaction amount relative to typical spend",
+        "contribution": -0.007056504901268344,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__account_velocity",
+        "phrase": "Account activity velocity",
+        "contribution": -0.006613793262923257,
+        "direction": "decreases_risk"
+      }
+    ],
+    "disclaimer": "Top model contributors reflect model feature attributions, not causal claims."
+  },
+  {
+    "sample_index": 2,
+    "top_model_contributors": [
+      {
+        "feature": "num__previous_chargebacks",
+        "phrase": "Previous chargebacks on the customer",
+        "contribution": -0.013973104430127399,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__failed_attempts_24h",
+        "phrase": "Failed payment attempts in 24 hours",
+        "contribution": -0.010078455696588275,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__amount_deviation",
+        "phrase": "Deviation from the customer's usual amount",
+        "contribution": -0.009989976985658278,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__customer_history_score",
+        "phrase": "Prior customer history score",
+        "contribution": -0.007746612123613092,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__new_device",
+        "phrase": "New or recently seen device",
+        "contribution": 0.006573258661009076,
+        "direction": "increases_risk"
+      }
+    ],
+    "disclaimer": "Top model contributors reflect model feature attributions, not causal claims."
+  },
+  {
+    "sample_index": 3,
+    "top_model_contributors": [
+      {
+        "feature": "num__country_risk_score",
+        "phrase": "Country risk score",
+        "contribution": -0.018326530967825185,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__customer_account_age_days",
+        "phrase": "Customer account age",
+        "contribution": -0.012870879473089698,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__previous_chargebacks",
+        "phrase": "Previous chargebacks on the customer",
+        "contribution": -0.01145319718762206,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__failed_attempts_24h",
+        "phrase": "Failed payment attempts in 24 hours",
+        "contribution": -0.010574054684432071,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__ip_risk_score",
+        "phrase": "IP risk score",
+        "contribution": -0.009713313403449518,
+        "direction": "decreases_risk"
+      }
+    ],
+    "disclaimer": "Top model contributors reflect model feature attributions, not causal claims."
+  },
+  {
+    "sample_index": 4,
+    "top_model_contributors": [
+      {
+        "feature": "num__previous_chargebacks",
+        "phrase": "Previous chargebacks on the customer",
+        "contribution": -0.012640162259410505,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__customer_account_age_days",
+        "phrase": "Customer account age",
+        "contribution": -0.011663624936381033,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__account_velocity",
+        "phrase": "Account activity velocity",
+        "contribution": -0.01113600590476521,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__country_risk_score",
+        "phrase": "Country risk score",
+        "contribution": -0.011054227822930009,
+        "direction": "decreases_risk"
+      },
+      {
+        "feature": "num__device_age_days",
+        "phrase": "Age of the device on this account",
+        "contribution": -0.009740611383279,
+        "direction": "decreases_risk"
+      }
+    ],
+    "disclaimer": "Top model contributors reflect model feature attributions, not causal claims."
+  }
+]

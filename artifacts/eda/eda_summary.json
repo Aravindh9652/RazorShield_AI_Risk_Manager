@@ -1,0 +1,109 @@
+{
+  "dataset_path": "C:\\Users\\vajja\\Epics_Project\\RazorPay\\data\\transactions.csv",
+  "class_distribution": {
+    "total_transactions": 18000,
+    "legitimate_count": 15294,
+    "fraud_count": 2706,
+    "fraud_percentage": 15.03
+  },
+  "amount_summary": {
+    "overall": {
+      "mean": 3910.05,
+      "median": 2211.65,
+      "std": 6050.77,
+      "min": 123.62,
+      "max": 177967.53
+    },
+    "legitimate": {
+      "mean": 3764.33,
+      "median": 2201.97,
+      "p75": 4524.83
+    },
+    "fraud": {
+      "mean": 4733.65,
+      "median": 2299.9,
+      "p75": 5202.66
+    }
+  },
+  "categorical_fraud_rates": {
+    "currency": {
+      "INR": {
+        "count": 18000,
+        "fraud_rate": 0.1503
+      }
+    },
+    "payment_method": {
+      "card": {
+        "count": 5398,
+        "fraud_rate": 0.146
+      },
+      "netbanking": {
+        "count": 2191,
+        "fraud_rate": 0.1483
+      },
+      "upi": {
+        "count": 8741,
+        "fraud_rate": 0.1516
+      },
+      "wallet": {
+        "count": 1670,
+        "fraud_rate": 0.1605
+      }
+    },
+    "merchant_category": {
+      "digital_goods": {
+        "count": 2127,
+        "fraud_rate": 0.1472
+      },
+      "ecommerce": {
+        "count": 2372,
+        "fraud_rate": 0.1556
+      },
+      "education": {
+        "count": 2216,
+        "fraud_rate": 0.1494
+      },
+      "electronics": {
+        "count": 2139,
+        "fraud_rate": 0.1505
+      },
+      "fashion": {
+        "count": 2249,
+        "fraud_rate": 0.1432
+      },
+      "food": {
+        "count": 2201,
+        "fraud_rate": 0.1567
+      },
+      "travel": {
+        "count": 2412,
+        "fraud_rate": 0.1538
+      },
+      "utilities": {
+        "count": 2284,
+        "fraud_rate": 0.1458
+      }
+    }
+  },
+  "feature_correlations": {
+    "previous_chargebacks": 0.1391,
+    "account_velocity": 0.1212,
+    "transaction_count_1h": 0.1211,
+    "failed_attempts_24h": 0.1129,
+    "transaction_count_24h": 0.1023,
+    "location_distance_from_previous": 0.0995,
+    "ip_risk_score": 0.0841,
+    "country_risk_score": 0.0836,
+    "customer_history_score": -0.0775,
+    "amount": 0.0573,
+    "amount_deviation": 0.0538,
+    "new_device": 0.0407,
+    "amount_sum_24h": 0.0269,
+    "device_age_days": -0.0241,
+    "customer_account_age_days": -0.0195,
+    "is_weekend": 0.011,
+    "customer_avg_amount": -0.0082,
+    "transaction_hour": 0.0078,
+    "customer_transaction_count": -0.0032
+  }
+}

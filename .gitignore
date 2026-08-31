@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+dist/
+build/
+
+# Data & model artifacts (generated)
+data/*.csv
+data/*.parquet
+models/*.json
+models/*.ubj
+models/*.pkl
+models/*.joblib
+artifacts/*.png
+artifacts/*.json
+!data/README.md
+!models/README.md
+!artifacts/README.md
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Local SQLite database files
+*.db

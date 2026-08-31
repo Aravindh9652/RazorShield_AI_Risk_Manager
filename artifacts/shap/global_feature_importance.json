@@ -1,0 +1,194 @@
+[
+  {
+    "feature_raw": "num__previous_chargebacks",
+    "feature": "previous_chargebacks",
+    "phrase": "Previous chargebacks on the customer",
+    "mean_abs_shap": 0.01834892201382179
+  },
+  {
+    "feature_raw": "num__failed_attempts_24h",
+    "feature": "failed_attempts_24h",
+    "phrase": "Failed payment attempts in 24 hours",
+    "mean_abs_shap": 0.014270249667736537
+  },
+  {
+    "feature_raw": "num__ip_risk_score",
+    "feature": "ip_risk_score",
+    "phrase": "IP risk score",
+    "mean_abs_shap": 0.009173967386406206
+  },
+  {
+    "feature_raw": "num__customer_account_age_days",
+    "feature": "customer_account_age_days",
+    "phrase": "Customer account age",
+    "mean_abs_shap": 0.00916653267133822
+  },
+  {
+    "feature_raw": "num__amount_deviation",
+    "feature": "amount_deviation",
+    "phrase": "Deviation from the customer's usual amount",
+    "mean_abs_shap": 0.009143688638460618
+  },
+  {
+    "feature_raw": "num__customer_history_score",
+    "feature": "customer_history_score",
+    "phrase": "Prior customer history score",
+    "mean_abs_shap": 0.008979547605807893
+  },
+  {
+    "feature_raw": "num__country_risk_score",
+    "feature": "country_risk_score",
+    "phrase": "Country risk score",
+    "mean_abs_shap": 0.007142752024200322
+  },
+  {
+    "feature_raw": "num__amount",
+    "feature": "amount",
+    "phrase": "Transaction amount relative to typical spend",
+    "mean_abs_shap": 0.006746233534081269
+  },
+  {
+    "feature_raw": "num__new_device",
+    "feature": "new_device",
+    "phrase": "New or recently seen device",
+    "mean_abs_shap": 0.0065013275388155775
+  },
+  {
+    "feature_raw": "num__account_velocity",
+    "feature": "account_velocity",
+    "phrase": "Account activity velocity",
+    "mean_abs_shap": 0.006249866525526897
+  },
+  {
+    "feature_raw": "num__location_distance_from_previous",
+    "feature": "location_distance_from_previous",
+    "phrase": "Geographic distance from the previous transaction",
+    "mean_abs_shap": 0.005854809012141292
+  },
+  {
+    "feature_raw": "num__transaction_count_24h",
+    "feature": "transaction_count_24h",
+    "phrase": "Transaction velocity (24 hours)",
+    "mean_abs_shap": 0.00530822688590061
+  },
+  {
+    "feature_raw": "num__customer_avg_amount",
+    "feature": "customer_avg_amount",
+    "phrase": "Customer's historical average amount",
+    "mean_abs_shap": 0.004863790355010026
+  },
+  {
+    "feature_raw": "num__transaction_count_1h",
+    "feature": "transaction_count_1h",
+    "phrase": "Transaction velocity (1 hour)",
+    "mean_abs_shap": 0.004775264844807525
+  },
+  {
+    "feature_raw": "num__amount_sum_24h",
+    "feature": "amount_sum_24h",
+    "phrase": "Spend volume in the last 24 hours",
+    "mean_abs_shap": 0.004381912878322331
+  },
+  {
+    "feature_raw": "num__device_age_days",
+    "feature": "device_age_days",
+    "phrase": "Age of the device on this account",
+    "mean_abs_shap": 0.004022921594606844
+  },
+  {
+    "feature_raw": "num__customer_transaction_count",
+    "feature": "customer_transaction_count",
+    "phrase": "Prior transaction count",
+    "mean_abs_shap": 0.003467807879863779
+  },
+  {
+    "feature_raw": "num__transaction_hour",
+    "feature": "transaction_hour",
+    "phrase": "Hour of day",
+    "mean_abs_shap": 0.003227077995554401
+  },
+  {
+    "feature_raw": "cat__merchant_category_ecommerce",
+    "feature": "merchant_category_ecommerce",
+    "phrase": "merchant category ecommerce",
+    "mean_abs_shap": 0.0013290221700930254
+  },
+  {
+    "feature_raw": "cat__merchant_category_travel",
+    "feature": "merchant_category_travel",
+    "phrase": "merchant category travel",
+    "mean_abs_shap": 0.0013084166379678528
+  },
+  {
+    "feature_raw": "cat__merchant_category_electronics",
+    "feature": "merchant_category_electronics",
+    "phrase": "merchant category electronics",
+    "mean_abs_shap": 0.0011720367301719036
+  },
+  {
+    "feature_raw": "cat__payment_method_card",
+    "feature": "payment_method_card",
+    "phrase": "payment method card",
+    "mean_abs_shap": 0.000991286798824048
+  },
+  {
+    "feature_raw": "num__is_weekend",
+    "feature": "is_weekend",
+    "phrase": "Weekend transaction",
+    "mean_abs_shap": 0.0009672038556477148
+  },
+  {
+    "feature_raw": "cat__payment_method_upi",
+    "feature": "payment_method_upi",
+    "phrase": "payment method upi",
+    "mean_abs_shap": 0.0008643075495293997
+  },
+  {
+    "feature_raw": "cat__merchant_category_utilities",
+    "feature": "merchant_category_utilities",
+    "phrase": "merchant category utilities",
+    "mean_abs_shap": 0.0005086477798359291
+  },
+  {
+    "feature_raw": "cat__merchant_category_education",
+    "feature": "merchant_category_education",
+    "phrase": "merchant category education",
+    "mean_abs_shap": 0.0004890705755124002
+  },
+  {
+    "feature_raw": "cat__merchant_category_digital_goods",
+    "feature": "merchant_category_digital_goods",
+    "phrase": "merchant category digital goods",
+    "mean_abs_shap": 0.00044549033172376276
+  },
+  {
+    "feature_raw": "cat__payment_method_wallet",
+    "feature": "payment_method_wallet",
+    "phrase": "payment method wallet",
+    "mean_abs_shap": 0.0004326058793720306
+  },
+  {
+    "feature_raw": "cat__merchant_category_fashion",
+    "feature": "merchant_category_fashion",
+    "phrase": "merchant category fashion",
+    "mean_abs_shap": 0.0004317184384211144
+  },
+  {
+    "feature_raw": "cat__merchant_category_food",
+    "feature": "merchant_category_food",
+    "phrase": "merchant category food",
+    "mean_abs_shap": 0.0004069692835001803
+  },
+  {
+    "feature_raw": "cat__payment_method_netbanking",
+    "feature": "payment_method_netbanking",
+    "phrase": "payment method netbanking",
+    "mean_abs_shap": 0.00026563634723691167
+  },
+  {
+    "feature_raw": "cat__currency_INR",
+    "feature": "currency_INR",
+    "phrase": "Currency",
+    "mean_abs_shap": 0.0
+  }
+]

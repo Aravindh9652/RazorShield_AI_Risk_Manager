@@ -5,6 +5,7 @@ import io
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from backend.app.db.models import Assessment
@@ -90,10 +91,16 @@ def metrics(db: Session = Depends(get_db)):
         "disclaimer": "Held-out metrics come from the evaluation pipeline on synthetic data. Operational counts are live assessments.",
         "operational": {
             "transactions_assessed": total,
+            "total_assessments": total,
             "high_risk": high,
             "review_queue": review,
+            "review_count": review,
             "blocked": blocked,
+            "block_count": blocked,
             "allowed": allowed,
+            "allow_count": allowed,
+            "degraded_count": 0,
+            "pending_reviews": review,
         },
         "heldout": {
             "selected_model": heldout.get("selected_model"),
@@ -133,36 +140,41 @@ def list_assessments(
     db: Session = Depends(get_db),
     decision: str | None = None,
     risk_level: str | None = None,
+    review_status: str | None = None,
     q: str | None = None,
     limit: int = Query(50, le=200),
     offset: int = 0,
 ):
+    from backend.app.services.assess import _serialize
+
     query = db.query(Assessment).order_by(Assessment.created_at.desc())
     if decision:
         query = query.filter(Assessment.decision == decision)
     if risk_level:
         query = query.filter(Assessment.risk_level == risk_level)
+    if review_status == "pending":
+        query = query.filter(
+            or_(
+                Assessment.review_status == "pending",
+                Assessment.review_status == "none",
+                Assessment.review_status.is_(None),
+            ),
+            (~Assessment.review_status.in_(["approved", "rejected", "reviewed"])) | Assessment.review_status.is_(None),
+        )
+    elif review_status:
+        query = query.filter(Assessment.review_status == review_status)
     if q:
         query = query.filter(Assessment.transaction_id.ilike(f"%{q}%"))
     rows = query.offset(offset).limit(limit).all()
-    return {
-        "items": [
-            {
-                "assessment_id": str(r.assessment_id),
-                "transaction_id": r.transaction_id,
-                "amount": r.amount,
-                "timestamp": r.event_time.isoformat(),
-                "risk_probability": r.risk_probability,
-                "risk_level": r.risk_level,
-                "decision": r.decision,
-                "top_reason": (r.top_factors or [{}])[0].get("phrase") if r.top_factors else None,
-                "review_status": r.review_status,
-                "model_version": r.model_version,
-                "degraded": r.degraded,
-            }
-            for r in rows
-        ]
-    }
+    items = []
+    for r in rows:
+        serialized = _serialize(r).model_dump(mode="json")
+        serialized["risk_score"] = int(round((r.risk_probability or 0.0) * 100))
+        serialized["merchant_id"] = r.merchant_id or "mch_default"
+        serialized["customer_id"] = getattr(r, "customer_id", "cust_default")
+        serialized["top_contributors"] = [f for f in (r.top_factors or [])]
+        items.append(serialized)
+    return {"total": len(items), "items": items}
 
 
 @router.get("/{transaction_id}", response_model=AssessmentOut)

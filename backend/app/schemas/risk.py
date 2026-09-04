@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -13,7 +13,7 @@ class TransactionIn(BaseModel):
     merchant_id: str
     amount: float = Field(gt=0, le=10_000_000)
     currency: str = "INR"
-    timestamp: datetime
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     payment_method: str
     device_id: str
     customer_id: str
@@ -74,6 +74,11 @@ class FactorOut(BaseModel):
 class AssessmentOut(BaseModel):
     assessment_id: str
     transaction_id: str
+    merchant_id: str | None = None
+    customer_id: str | None = None
+    device_id: str | None = None
+    payment_method: str | None = None
+    merchant_category: str | None = None
     timestamp: datetime
     amount: float
     currency: str
@@ -92,6 +97,7 @@ class AssessmentOut(BaseModel):
     processing_status: str
     duplicate: bool = False
     audit_id: str | None = None
+    review_status: str | None = None
 
 
 class ReviewActionIn(BaseModel):

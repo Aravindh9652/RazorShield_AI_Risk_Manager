@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Server, Database, Cpu, Layers, FileText, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Server, Database, Cpu, Layers, FileText, CheckCircle2, AlertTriangle, RefreshCw } from 'lucide-react';
 import type { SystemHealth } from '../types';
 import { apiService } from '../services/api';
 import { DegradedBanner } from '../components/DegradedBanner';
@@ -24,7 +24,9 @@ export const HealthPage: React.FC = () => {
     checkHealth();
   }, []);
 
-  const isDegraded = health?.status === 'degraded' || !health?.db?.connected || !health?.model?.loaded;
+  const isDbOk = health?.db === 'ok' || (typeof health?.db === 'object' && health?.db?.connected);
+  const isModelOk = health?.model === 'ok' || (typeof health?.model === 'object' && health?.model?.loaded);
+  const isDegraded = health?.status === 'degraded' || !isDbOk || !isModelOk;
 
   return (
     <div className="p-6 space-y-6">
@@ -72,8 +74,9 @@ export const HealthPage: React.FC = () => {
               <Database className="h-4 w-4 text-sky-400" />
               <span>PostgreSQL Database</span>
             </div>
-            <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-              <CheckCircle2 className="h-3 w-3" /> Connected
+            <span className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${isDbOk ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20'}`}>
+              {isDbOk ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+              {isDbOk ? 'Connected' : 'Degraded'}
             </span>
           </div>
           <p className="text-xs text-slate-400">
@@ -90,15 +93,16 @@ export const HealthPage: React.FC = () => {
               <Cpu className="h-4 w-4 text-sky-400" />
               <span>Risk Model Engine</span>
             </div>
-            <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-              <CheckCircle2 className="h-3 w-3" /> Loaded
+            <span className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${isModelOk ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20'}`}>
+              {isModelOk ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+              {isModelOk ? 'Loaded' : 'Degraded'}
             </span>
           </div>
           <p className="text-xs text-slate-400">
             Serialized Random Forest pipeline executing probability estimation and policy routing.
           </p>
           <div className="text-[11px] font-mono text-sky-400 pt-2 border-t border-slate-800/80">
-            Model: risk-model-v1.joblib
+            Model: {health?.model_version || 'risk-model-v1.joblib'}
           </div>
         </div>
 
@@ -116,7 +120,7 @@ export const HealthPage: React.FC = () => {
             Local SHAP factor attribution calculating top model contributors per transaction.
           </p>
           <div className="text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-800/80">
-            Explainability: Active (SHAP 0.44)
+            Explainability: Active (SHAP TreeExplainer)
           </div>
         </div>
 

@@ -47,6 +47,18 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    @app.get("/")
+    async def root():
+        return {
+            "name": "RazorShield API",
+            "subtitle": "Explainable AI Risk Manager for Merchants",
+            "version": "1.0.0",
+            "status": "online",
+            "docs": "/docs",
+            "health": "/api/v1/health",
+        }
+
     app.include_router(health.router, prefix="/api/v1")
     app.include_router(risk.router, prefix="/api/v1")
     app.include_router(audit.router, prefix="/api/v1")

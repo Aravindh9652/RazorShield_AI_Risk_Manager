@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from backend.app.config import get_settings
-from backend.app.db.models import ModelRegistry, PolicyConfig
+from backend.app.db.models import Assessment, ModelRegistry, PolicyConfig
 from ml.constants import DEFAULT_COST, FEATURE_COLUMNS, MODEL_VERSION
 from ml.serve import ModelBundle, load_bundle
 
@@ -44,6 +44,55 @@ def load_metrics_file() -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def seed_initial_assessments(db: Session) -> None:
+    if db.query(Assessment).count() > 0:
+        return
+
+    settings = get_settings()
+    csv_path = Path(settings.data_dir) / "demo_batch.csv"
+    if not csv_path.exists():
+        return
+
+    import pandas as pd
+    from backend.app.schemas.risk import TransactionIn
+    from backend.app.services.assess import apply_review, assess_transaction
+
+    df = pd.read_csv(csv_path)
+    sample_rows = df.head(30).to_dict(orient="records")
+
+    assessed = []
+    for row in sample_rows:
+        row.pop("fraud_label", None)
+        row.pop("dataset_version", None)
+        row.pop("scenario", None)
+        try:
+            tx_in = TransactionIn.model_validate(row)
+            res = assess_transaction(db, tx_in)
+            assessed.append(res)
+        except Exception as exc:
+            logger.warning(f"Failed to seed row {row.get('transaction_id')}: {exc}")
+
+    review_items = [a for a in assessed if a.decision == "REVIEW"]
+    if len(review_items) >= 2:
+        try:
+            apply_review(
+                db,
+                review_items[0].transaction_id,
+                action="approve",
+                actor="senior_analyst",
+                note="Seeded demo approval - verified customer history",
+            )
+            apply_review(
+                db,
+                review_items[1].transaction_id,
+                action="reject",
+                actor="senior_analyst",
+                note="Seeded demo rejection - velocity burst confirmed",
+            )
+        except Exception:
+            pass
 
 
 def bootstrap_registry(db: Session) -> None:
@@ -103,3 +152,8 @@ def bootstrap_registry(db: Session) -> None:
     else:
         db.add(PolicyConfig(**pol_payload))
     db.commit()
+
+    try:
+        seed_initial_assessments(db)
+    except Exception as exc:
+        logger.warning(f"Failed to seed initial demo assessments: {exc}")

@@ -35,6 +35,8 @@ export interface TransactionInput {
   country_risk_score: number;
   account_velocity: number;
   customer_history_score: number;
+  transaction_hour?: number;
+  is_weekend?: number;
 }
 
 export interface Assessment {
@@ -70,14 +72,16 @@ export interface AssessmentListResponse {
 }
 
 export interface AuditLog {
-  id: number;
+  id: string | number;
   event_type: string;
   transaction_id?: string;
   assessment_id?: string;
-  actor: string;
-  action: string;
+  actor?: string;
+  action?: string;
+  payload?: Record<string, any>;
   details?: Record<string, any>;
-  timestamp: string;
+  timestamp?: string;
+  created_at?: string;
 }
 
 export interface AuditLogListResponse {
@@ -87,15 +91,11 @@ export interface AuditLogListResponse {
 
 export interface SystemHealth {
   status: 'ok' | 'healthy' | 'degraded' | 'unavailable';
-  db: {
-    connected: boolean;
-    type: string;
-  };
-  model: {
-    loaded: boolean;
-    version: string;
-  };
-  policy_version: string;
+  db: { connected?: boolean; type?: string } | string;
+  model: { loaded?: boolean; version?: string } | string;
+  model_version?: string;
+  policy_version?: string;
+  time?: string;
 }
 
 export interface SystemMetrics {

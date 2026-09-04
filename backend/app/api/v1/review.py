@@ -11,10 +11,15 @@ router = APIRouter(prefix="/review", tags=["review"])
 
 @router.get("/queue")
 def queue(db: Session = Depends(get_db)):
+    from sqlalchemy import or_
+
     rows = (
         db.query(Assessment)
         .filter(Assessment.decision.in_(["REVIEW", "BLOCK"]))
-        .filter(Assessment.review_status.in_(["pending", "none"]))
+        .filter(
+            or_(Assessment.review_status.in_(["pending", "none"]), Assessment.review_status.is_(None)),
+            ((~Assessment.review_status.in_(["approved", "rejected", "reviewed"])) | Assessment.review_status.is_(None)),
+        )
         .order_by(Assessment.created_at.desc())
         .limit(200)
         .all()

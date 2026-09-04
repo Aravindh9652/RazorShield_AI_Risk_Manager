@@ -58,7 +58,7 @@ def feature_hash(payload: dict[str, Any]) -> str:
 
 
 def snapshot_features(payload: dict[str, Any]) -> dict[str, Any]:
-    return {k: payload[k] for k in FEATURE_COLUMNS if k in payload}
+    return {k: v for k, v in payload.items() if k not in ("transaction_id", "timestamp")}
 
 
 def to_model_frame(records: list[dict[str, Any]] | pd.DataFrame) -> pd.DataFrame:

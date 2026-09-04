@@ -59,7 +59,7 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const isDegraded = health?.status === 'degraded' || (health?.db && !health.db.connected);
+  const isDegraded = health?.status === 'degraded' || health?.db === 'unavailable' || health?.model === 'unavailable';
 
   return (
     <div className="flex min-h-screen bg-[#0b1120] text-slate-100">

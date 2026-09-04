@@ -15,9 +15,23 @@ async function handleResponse<T>(response: Response): Promise<T> {
     let errorDetail = 'API request failed';
     try {
       const errJson = await response.json();
-      errorDetail = errJson.detail || errJson.message || JSON.stringify(errJson);
+      if (typeof errJson.detail === 'string') {
+        errorDetail = errJson.detail;
+      } else if (Array.isArray(errJson.detail)) {
+        errorDetail = errJson.detail
+          .map((item: any) =>
+            typeof item === 'string'
+              ? item
+              : `${item.loc ? item.loc.filter((l: any) => l !== 'body').join('.') + ': ' : ''}${item.msg || JSON.stringify(item)}`
+          )
+          .join('; ');
+      } else if (errJson.detail) {
+        errorDetail = typeof errJson.detail === 'object' ? JSON.stringify(errJson.detail) : String(errJson.detail);
+      } else {
+        errorDetail = errJson.message || JSON.stringify(errJson);
+      }
     } catch {
-      errorDetail = response.statusText;
+      errorDetail = response.statusText || `HTTP ${response.status}`;
     }
     throw new Error(errorDetail);
   }
@@ -73,24 +87,44 @@ export const apiService = {
   },
 
   async assessTransaction(payload: TransactionInput): Promise<Assessment> {
+    const fullPayload = {
+      ...payload,
+      timestamp: payload.timestamp || new Date().toISOString(),
+    };
     const res = await fetch(`${API_BASE}/risk/assess`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(fullPayload),
     });
-    return handleResponse<Assessment>(res);
+    const data: any = await handleResponse<any>(res);
+    const prob = data.risk_probability ?? 0.5;
+    const rawContributors = data.top_contributors || data.top_factors || [];
+    const contributors = rawContributors.map((f: any) => ({
+      feature: f.feature,
+      phrase: f.phrase || f.feature,
+      value: typeof f.value === 'number' ? f.value : typeof f.contribution === 'number' ? f.contribution : 0,
+      direction: f.direction,
+    }));
+    return {
+      ...data,
+      risk_score: data.risk_score ?? Math.round(prob * 100),
+      top_contributors: contributors,
+      top_factors: contributors,
+    };
   },
 
   async getAssessments(params?: {
     limit?: number;
     decision?: string;
     risk_level?: string;
+    review_status?: string;
     search?: string;
   }): Promise<AssessmentListResponse> {
     const query = new URLSearchParams();
     if (params?.limit) query.append('limit', params.limit.toString());
     if (params?.decision) query.append('decision', params.decision);
     if (params?.risk_level) query.append('risk_level', params.risk_level);
+    if (params?.review_status) query.append('review_status', params.review_status);
     if (params?.search) query.append('search', params.search);
 
     const url = `${API_BASE}/risk/assessments?${query.toString()}`;
@@ -112,9 +146,10 @@ export const apiService = {
     return handleResponse<Assessment>(res);
   },
 
-  async getAuditLogs(params?: { limit?: number }): Promise<AuditLogListResponse> {
+  async getAuditLogs(params?: { limit?: number; transaction_id?: string }): Promise<AuditLogListResponse> {
     const query = new URLSearchParams();
     if (params?.limit) query.append('limit', params.limit.toString());
+    if (params?.transaction_id) query.append('transaction_id', params.transaction_id);
     const res = await fetch(`${API_BASE}/audit/logs?${query.toString()}`);
     return handleResponse<AuditLogListResponse>(res);
   },

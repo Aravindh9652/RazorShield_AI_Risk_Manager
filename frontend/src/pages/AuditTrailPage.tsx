@@ -6,7 +6,7 @@ import { apiService } from '../services/api';
 export const AuditTrailPage: React.FC = () => {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | number | null>(null);
 
   const loadAuditLogs = async () => {
     setLoading(true);
@@ -24,7 +24,7 @@ export const AuditTrailPage: React.FC = () => {
     loadAuditLogs();
   }, []);
 
-  const toggleExpand = (id: number) => {
+  const toggleExpand = (id: string | number) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
@@ -53,9 +53,9 @@ export const AuditTrailPage: React.FC = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-slate-300">
-              <thead className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider bg-slate-950/60">
+              <thead className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider bg-slate-950/40">
                 <tr>
-                  <th className="py-3.5 px-4"># ID</th>
+                  <th className="py-3.5 px-4">Event ID</th>
                   <th className="py-3.5 px-4">Timestamp</th>
                   <th className="py-3.5 px-4">Event Type</th>
                   <th className="py-3.5 px-4">Transaction ID</th>
@@ -71,16 +71,18 @@ export const AuditTrailPage: React.FC = () => {
                       onClick={() => toggleExpand(log.id)}
                       className="hover:bg-slate-800/40 cursor-pointer transition-colors"
                     >
-                      <td className="py-3.5 px-4 text-slate-500">#{log.id}</td>
+                      <td className="py-3.5 px-4 text-slate-500 text-[10px]">#{String(log.id).slice(-8)}</td>
                       <td className="py-3.5 px-4 text-slate-300 text-[11px]">
-                        {new Date(log.timestamp).toLocaleString()}
+                        {new Date(log.created_at || log.timestamp || Date.now()).toLocaleString()}
                       </td>
                       <td className="py-3.5 px-4 font-semibold text-sky-400 font-sans">
                         {log.event_type}
                       </td>
                       <td className="py-3.5 px-4 text-slate-200">{log.transaction_id || 'N/A'}</td>
-                      <td className="py-3.5 px-4 text-slate-400 font-sans">{log.actor}</td>
-                      <td className="py-3.5 px-4 font-sans text-slate-300">{log.action}</td>
+                      <td className="py-3.5 px-4 text-slate-400 font-sans">{log.actor || log.payload?.actor || 'system'}</td>
+                      <td className="py-3.5 px-4 font-sans text-slate-300">
+                        {log.action || log.payload?.note || log.event_type}
+                      </td>
                       <td className="py-3.5 px-4 text-right">
                         {expandedId === log.id ? (
                           <ChevronDown className="h-4 w-4 text-sky-400 inline" />
@@ -97,7 +99,7 @@ export const AuditTrailPage: React.FC = () => {
                             <div className="text-[10px] font-sans font-semibold uppercase text-slate-500 mb-1">
                               Raw Audit Event Payload (Immutable)
                             </div>
-                            <pre className="text-sky-300">{JSON.stringify(log.details || log, null, 2)}</pre>
+                            <pre className="text-sky-300">{JSON.stringify(log.payload || log.details || log, null, 2)}</pre>
                           </div>
                         </td>
                       </tr>

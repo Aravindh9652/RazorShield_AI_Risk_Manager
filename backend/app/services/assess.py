@@ -27,9 +27,19 @@ def _serialize(row: Assessment, duplicate: bool = False, audit_id: str | None = 
     bundle = try_load_model()
     t1 = bundle.t1 if bundle else 0.25
     t2 = bundle.t2 if bundle else 0.65
+    snap = row.feature_snapshot or {}
+    pm = snap.get("payment_method") or "UPI"
+    mc = snap.get("merchant_category") or "Ecommerce"
+    cid = snap.get("customer_id") or "cust_default"
+    did = snap.get("device_id") or "dev_default"
     return AssessmentOut(
         assessment_id=str(row.assessment_id),
         transaction_id=row.transaction_id,
+        merchant_id=row.merchant_id or snap.get("merchant_id") or "mch_default",
+        customer_id=cid,
+        device_id=did,
+        payment_method=str(pm).upper(),
+        merchant_category=str(mc).capitalize(),
         timestamp=row.event_time,
         amount=row.amount,
         currency=row.currency,
@@ -48,6 +58,7 @@ def _serialize(row: Assessment, duplicate: bool = False, audit_id: str | None = 
         processing_status=row.processing_status,
         duplicate=duplicate,
         audit_id=audit_id,
+        review_status=row.review_status,
     )
 
 

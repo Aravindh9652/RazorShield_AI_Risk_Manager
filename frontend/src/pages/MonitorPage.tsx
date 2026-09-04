@@ -133,7 +133,7 @@ export const MonitorPage: React.FC<MonitorPageProps> = ({ onSelectAssessment }) 
                     </td>
                     <td className="py-3.5 px-4 text-slate-300">{a.merchant_id}</td>
                     <td className="py-3.5 px-4 font-mono font-bold text-slate-100">
-                      ₹{a.amount?.toLocaleString()}
+                      ₹{(a.amount ?? 0).toLocaleString()}
                     </td>
                     <td className="py-3.5 px-4 font-mono font-bold">
                       <span className={a.risk_score >= 71 ? 'text-rose-400' : a.risk_score >= 35 ? 'text-amber-400' : 'text-emerald-400'}>

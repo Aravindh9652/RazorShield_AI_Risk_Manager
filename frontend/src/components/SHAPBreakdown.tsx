@@ -3,11 +3,13 @@ import { ArrowDownRight, ArrowUpRight, Info } from 'lucide-react';
 import type { TopContributor } from '../types';
 
 interface SHAPBreakdownProps {
-  contributors: TopContributor[];
+  contributors?: TopContributor[];
 }
 
 export const SHAPBreakdown: React.FC<SHAPBreakdownProps> = ({ contributors }) => {
-  if (!contributors || contributors.length === 0) {
+  const items = Array.isArray(contributors) ? contributors : [];
+
+  if (items.length === 0) {
     return (
       <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 text-center text-xs text-slate-400">
         No factor breakdown available for this decision.
@@ -15,8 +17,8 @@ export const SHAPBreakdown: React.FC<SHAPBreakdownProps> = ({ contributors }) =>
     );
   }
 
-  const increasing = contributors.filter((c) => c.direction === 'increases_risk');
-  const decreasing = contributors.filter((c) => c.direction === 'decreases_risk');
+  const increasing = items.filter((c) => c && c.direction === 'increases_risk');
+  const decreasing = items.filter((c) => c && c.direction === 'decreases_risk');
 
   return (
     <div className="space-y-4">
@@ -38,12 +40,16 @@ export const SHAPBreakdown: React.FC<SHAPBreakdownProps> = ({ contributors }) =>
           {increasing.length === 0 ? (
             <p className="text-xs text-slate-500 italic">No significant risk elevating factors</p>
           ) : (
-            increasing.map((c, idx) => (
-              <div key={idx} className="flex items-center justify-between text-xs">
-                <span className="text-slate-300 font-medium">{c.phrase || c.feature}</span>
-                <span className="font-mono text-rose-400 font-semibold">+{(c.value * 100).toFixed(1)}%</span>
-              </div>
-            ))
+            increasing.map((c: any, idx) => {
+              const rawVal = c.value ?? c.contribution ?? 0;
+              const pct = (Math.abs(rawVal) * 100).toFixed(1);
+              return (
+                <div key={idx} className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-medium">{c.phrase || c.feature}</span>
+                  <span className="font-mono text-rose-400 font-semibold">+{pct}%</span>
+                </div>
+              );
+            })
           )}
         </div>
 
@@ -56,12 +62,16 @@ export const SHAPBreakdown: React.FC<SHAPBreakdownProps> = ({ contributors }) =>
           {decreasing.length === 0 ? (
             <p className="text-xs text-slate-500 italic">No significant risk mitigating factors</p>
           ) : (
-            decreasing.map((c, idx) => (
-              <div key={idx} className="flex items-center justify-between text-xs">
-                <span className="text-slate-300 font-medium">{c.phrase || c.feature}</span>
-                <span className="font-mono text-emerald-400 font-semibold">{(c.value * 100).toFixed(1)}%</span>
-              </div>
-            ))
+            decreasing.map((c: any, idx) => {
+              const rawVal = c.value ?? c.contribution ?? 0;
+              const pct = (Math.abs(rawVal) * 100).toFixed(1);
+              return (
+                <div key={idx} className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-medium">{c.phrase || c.feature}</span>
+                  <span className="font-mono text-emerald-400 font-semibold">-{pct}%</span>
+                </div>
+              );
+            })
           )}
         </div>
       </div>

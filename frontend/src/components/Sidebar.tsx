@@ -31,8 +31,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ health }) => {
     { label: 'System Health', path: '/health', icon: Server },
   ];
 
-  const dbStatus = health?.db?.connected ? 'PostgreSQL Connected' : 'PostgreSQL Standby';
-  const modelStatus = health?.model?.loaded ? 'risk-model-v1' : 'Model Offline';
+  const dbStatus =
+    health?.db === 'ok' || (typeof health?.db === 'object' && health?.db?.connected)
+      ? 'PostgreSQL Connected'
+      : 'PostgreSQL Standby';
+
+  const modelStatus =
+    health?.model === 'ok' || (typeof health?.model === 'object' && health?.model?.loaded)
+      ? (health?.model_version || 'risk-model-v1')
+      : 'Model Offline';
 
   return (
     <aside className="w-64 shrink-0 border-r border-slate-800 bg-[#0f172a] flex flex-col justify-between h-screen sticky top-0">

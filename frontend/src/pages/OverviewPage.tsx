@@ -54,13 +54,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectAssessment }
     fetchData();
   }, []);
 
-  const op = metrics?.operational || {
-    total_assessments: 18000,
-    allow_count: 15294,
-    review_count: 2245,
-    block_count: 461,
-    degraded_count: 0,
-    pending_reviews: 42,
+  const rawOp = (metrics?.operational as any) || {};
+  const op = {
+    total_assessments: rawOp.total_assessments ?? rawOp.transactions_assessed ?? 18000,
+    allow_count: rawOp.allow_count ?? rawOp.allowed ?? 15294,
+    review_count: rawOp.review_count ?? rawOp.review_queue ?? 2245,
+    block_count: rawOp.block_count ?? rawOp.blocked ?? 461,
+    degraded_count: rawOp.degraded_count ?? 0,
+    pending_reviews: rawOp.pending_reviews ?? rawOp.review_queue ?? 42,
   };
 
   const held = metrics?.heldout || {
@@ -69,6 +70,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectAssessment }
     test_roc_auc: 0.6240,
     high_risk_precision: 0.5672,
   };
+
+  const formatAmount = (amt?: number) => (amt ?? 0).toLocaleString();
 
   const reviewRate = op.total_assessments > 0 ? ((op.review_count / op.total_assessments) * 100).toFixed(1) : '12.5';
 
@@ -292,7 +295,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectAssessment }
                     <td className="py-3 px-4 font-mono font-medium text-sky-400">{a.transaction_id}</td>
                     <td className="py-3 px-4 text-slate-300 font-medium">{a.merchant_id}</td>
                     <td className="py-3 px-4 font-mono font-semibold text-slate-100">
-                      ₹{a.amount?.toLocaleString()}
+                      ₹{formatAmount(a.amount)}
                     </td>
                     <td className="py-3 px-4 font-mono font-bold">
                       <span className={a.risk_score >= 71 ? 'text-rose-400' : a.risk_score >= 35 ? 'text-amber-400' : 'text-emerald-400'}>

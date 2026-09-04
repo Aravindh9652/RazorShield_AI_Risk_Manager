@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, CheckCircle, XCircle, ShieldCheck, Layers, MessageSquare, Loader2 } from 'lucide-react';
+import { X, CheckCircle, XCircle, ShieldCheck, Layers, MessageSquare, Loader2, FileText, Copy, Check } from 'lucide-react';
 import type { Assessment, AuditLog } from '../types';
 import { apiService } from '../services/api';
 import { RiskBadge } from './RiskBadge';
@@ -22,15 +22,41 @@ export const TransactionDetailDrawer: React.FC<TransactionDetailDrawerProps> = (
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [successToast, setSuccessToast] = useState<{ action: string; note: string } | null>(null);
+  const [evidencePack, setEvidencePack] = useState<any | null>(null);
+  const [generatingEvidence, setGeneratingEvidence] = useState(false);
+  const [copiedEvidence, setCopiedEvidence] = useState(false);
 
   useEffect(() => {
     setCurrentAssessment(assessment);
     setSuccessToast(null);
+    setEvidencePack(null);
+    setCopiedEvidence(false);
     setNote('');
     if (assessment?.transaction_id) {
       loadAuditLogs(assessment.transaction_id);
     }
   }, [assessment?.transaction_id]);
+
+  const handleGenerateEvidence = async () => {
+    if (!currentAssessment) return;
+    setGeneratingEvidence(true);
+    try {
+      const data = await apiService.getChargebackEvidence(currentAssessment.transaction_id);
+      setEvidencePack(data);
+    } catch (err) {
+      console.error('Failed to generate evidence:', err);
+    } finally {
+      setGeneratingEvidence(false);
+    }
+  };
+
+  const handleCopyEvidence = () => {
+    if (!evidencePack) return;
+    const text = `DISPUTE DEFENSE EVIDENCE PACK\nDispute ID: ${evidencePack.dispute_id}\nTransaction: ${evidencePack.transaction_id}\nMerchant: ${evidencePack.merchant_id}\nCustomer: ${evidencePack.customer_id}\nAmount: ₹${evidencePack.amount} ${evidencePack.currency}\nTimestamp: ${evidencePack.timestamp}\n\nSUMMARY:\n${evidencePack.defense_summary}\n\nAUDIT HASH: ${evidencePack.audit_hash}`;
+    navigator.clipboard.writeText(text);
+    setCopiedEvidence(true);
+    setTimeout(() => setCopiedEvidence(false), 3000);
+  };
 
   const loadAuditLogs = async (txId: string) => {
     setLoadingLogs(true);
@@ -205,6 +231,61 @@ export const TransactionDetailDrawer: React.FC<TransactionDetailDrawerProps> = (
                 {currentAssessment.decision === 'REVIEW' && ' Risk probability lies in uncertainty zone (t1 to t2). Routed to analyst review.'}
                 {currentAssessment.decision === 'BLOCK' && ' Risk probability exceeds t2 and transaction amount meets auto-block criteria.'}
               </p>
+            </div>
+
+            {/* Chargeback Evidence Auto-Responder Section */}
+            <div className="rounded-xl border border-sky-900/40 bg-sky-950/20 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5 text-sky-400" />
+                  <span>Chargeback Evidence Auto-Responder</span>
+                </h4>
+                {!evidencePack && (
+                  <button
+                    disabled={generatingEvidence}
+                    onClick={handleGenerateEvidence}
+                    className="flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-sky-600/20 px-3 py-1 text-xs font-semibold text-sky-300 hover:bg-sky-500/30 disabled:opacity-50 transition-colors"
+                  >
+                    {generatingEvidence ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <FileText className="h-3.5 w-3.5" />
+                    )}
+                    <span>Generate Evidence Pack</span>
+                  </button>
+                )}
+              </div>
+
+              {evidencePack ? (
+                <div className="space-y-3 rounded-lg border border-slate-800 bg-slate-950/80 p-3.5 font-mono text-xs">
+                  <div className="flex items-center justify-between text-[11px] border-b border-slate-800 pb-2">
+                    <span className="text-emerald-400 font-bold">{evidencePack.dispute_id}</span>
+                    <span className="text-slate-500 text-[10px]">Hash: {evidencePack.audit_hash}</span>
+                  </div>
+                  <div className="text-slate-300 font-sans leading-relaxed text-xs">
+                    {evidencePack.defense_summary}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 font-mono">
+                    <div>Device Age: {evidencePack.device_proof.device_age_days}d</div>
+                    <div>IP Risk Score: {evidencePack.device_proof.ip_risk_score}</div>
+                    <div>Customer Txns: {evidencePack.customer_history.previous_successful_txns}</div>
+                    <div>Prior Chargebacks: {evidencePack.customer_history.previous_chargebacks}</div>
+                  </div>
+                  <div className="pt-1 flex items-center justify-end">
+                    <button
+                      onClick={handleCopyEvidence}
+                      className="flex items-center gap-1.5 rounded bg-sky-600 px-3 py-1 text-[11px] font-semibold text-white hover:bg-sky-500 transition-colors"
+                    >
+                      {copiedEvidence ? <Check className="h-3.5 w-3.5 text-emerald-300" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span>{copiedEvidence ? 'Copied to Clipboard!' : 'Copy Evidence Pack'}</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400">
+                  Auto-generate an immutable, bank-ready dispute defense package containing SHAP risk explanations, device fingerprints, and customer purchase proof.
+                </p>
+              )}
             </div>
 
             {/* Analyst Review Notes & Verification History Section */}

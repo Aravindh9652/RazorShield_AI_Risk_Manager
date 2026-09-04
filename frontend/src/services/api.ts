@@ -153,4 +153,9 @@ export const apiService = {
     const res = await fetch(`${API_BASE}/audit/logs?${query.toString()}`);
     return handleResponse<AuditLogListResponse>(res);
   },
+
+  async getChargebackEvidence(transactionId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/risk/${transactionId}/evidence`);
+    return handleResponse<any>(res);
+  },
 };

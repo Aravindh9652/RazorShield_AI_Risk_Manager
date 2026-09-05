@@ -23,7 +23,11 @@ models/*.joblib
 artifacts/*.png
 artifacts/*.json
 !data/README.md
+!data/transactions.csv
+!data/demo_batch.csv
 !models/README.md
+!models/risk-model-v1.joblib
+!models/risk-model-v1.meta.json
 !artifacts/README.md
 
 # Node

@@ -44,7 +44,13 @@ def load_bundle(models_dir: Path | None = None, version: str = MODEL_VERSION) ->
     path = models_dir / f"{version}.joblib"
     meta_path = models_dir / f"{version}.meta.json"
     if not path.exists():
-        raise FileNotFoundError(f"Model artifact missing: {path}")
+        alt_path = ROOT / "artifacts" / "models" / version / "model.joblib"
+        alt_meta = ROOT / "artifacts" / "models" / version / "metadata.json"
+        if alt_path.exists():
+            path = alt_path
+            meta_path = alt_meta
+        else:
+            raise FileNotFoundError(f"Model artifact missing: {path}")
     pipeline = joblib.load(path)
     metadata = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
     return ModelBundle(pipeline, metadata, models_dir)

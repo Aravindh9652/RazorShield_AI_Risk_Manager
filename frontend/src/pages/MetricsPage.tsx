@@ -134,6 +134,49 @@ export const MetricsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Business Decision-Cost Framework Section (False-Positive & False-Negative Cost) */}
+      <div className="rounded-xl border border-amber-900/40 bg-amber-950/10 p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+            Business Decision-Cost Framework (False Positive vs. False Negative Trade-Off)
+          </h3>
+          <span className="text-[10px] font-mono text-amber-300/80 bg-amber-900/30 px-2 py-0.5 rounded">
+            Cost-Based Threshold Optimization
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-300 leading-relaxed">
+          Fraud risk evaluation is treated as a business risk optimization problem rather than pure classification accuracy.
+          Thresholds $t_1 = 0.349$ and $t_2 = 0.708$ are selected on validation data to minimize expected merchant loss:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+          <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3.5 space-y-1">
+            <div className="text-[10px] text-slate-400 font-sans uppercase">False Positive Review Cost</div>
+            <div className="text-lg font-bold text-amber-400">₹456,760.00</div>
+            <div className="text-[10px] text-slate-500 font-sans">2,279 analyst reviews @ ₹200 friction cost</div>
+          </div>
+
+          <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3.5 space-y-1">
+            <div className="text-[10px] text-slate-400 font-sans uppercase">False Negative Fraud Cost</div>
+            <div className="text-lg font-bold text-rose-400">₹11,559.86</div>
+            <div className="text-[10px] text-slate-500 font-sans">4 uncaught fraud txns below t1</div>
+          </div>
+
+          <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3.5 space-y-1">
+            <div className="text-[10px] text-slate-400 font-sans uppercase">Total Held-Out Test Cost</div>
+            <div className="text-lg font-bold text-sky-400">₹511,999.86</div>
+            <div className="text-[10px] text-slate-500 font-sans">Combined decision cost across 2,700 txns</div>
+          </div>
+
+          <div className="rounded-lg border border-slate-800 bg-slate-900/80 p-3.5 space-y-1">
+            <div className="text-[10px] text-slate-400 font-sans uppercase">Cost Per Transaction</div>
+            <div className="text-lg font-bold text-emerald-400">₹189.63</div>
+            <div className="text-[10px] text-slate-500 font-sans">Optimized min-cost operating point</div>
+          </div>
+        </div>
+      </div>
+
       <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-4">
         <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
           Global Feature Importance (SHAP TreeExplainer Mean |SHAP|)

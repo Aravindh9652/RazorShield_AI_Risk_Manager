@@ -32,6 +32,7 @@ export const TopBar: React.FC<TopBarProps> = ({ title, subtitle, onSearchChange 
         </div>
 
         <div className="flex items-center gap-3 sm:gap-4">
+
           {/* Environment Badge / Interactive Modal Toggle */}
           <button
             onClick={() => setShowEnvModal(true)}
